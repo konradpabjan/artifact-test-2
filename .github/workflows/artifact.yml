@@ -1,0 +1,18 @@
+name: Test_Artifact_V2
+on: [push]
+jobs:           
+  v1-artifacts:
+    runs-on: ubuntu-latest
+    steps: 
+    # Create lots of small files that are split from a single 2MB File, each file is 500 bytes
+    - run: |
+        mkdir -p small/files
+        dd if=/dev/zero of=small/files/masterfile bs=1 count=2097152
+        cd small/files
+        split -b 500 -a 10 masterfile
+    
+    - name: 'Upload 42k Small files'
+      uses: actions/upload-artifact@v1
+      with:
+        name: 'Small-Artifacts-V1'
+        path: .
